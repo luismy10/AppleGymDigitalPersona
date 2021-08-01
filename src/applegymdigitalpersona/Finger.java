@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Finger {
     
     private String idCliente;
+    private String opcion;
     private String tipo;
     private String dni;
     private String apellidos;
@@ -26,6 +27,14 @@ public class Finger {
 
     public void setIdCliente(String idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public String getOpcion() {
+        return opcion;
+    }
+
+    public void setOpcion(String opcion) {
+        this.opcion = opcion;
     }
 
     public String getTipo() {

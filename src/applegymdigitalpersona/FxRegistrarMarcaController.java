@@ -94,6 +94,8 @@ public class FxRegistrarMarcaController implements Initializable {
     private RadioButton rbCliente;
     @FXML
     private RadioButton rbPersonal;
+    @FXML
+    private Label lblProcesando;
 
     private final DPFPCapture lector = DPFPGlobal.getCaptureFactory().createCapture();
 
@@ -319,6 +321,7 @@ public class FxRegistrarMarcaController implements Initializable {
             lblFecha.setText("--");
             ivEstado.setImage(imageQuestion);
             lblMensaje.setText("Mensaje");
+            lblProcesando.setText("Procesando petición...");
             hbBody.setDisable(true);
             hbLoad.setVisible(true);
             tvLista.getItems().clear();
@@ -329,7 +332,7 @@ public class FxRegistrarMarcaController implements Initializable {
             lblDatos.setText("--");
             lblFecha.setText("--");
             ivEstado.setImage(imageError);
-            lblMensaje.setText("Se produjo obtener las huellas, comuníquese con su proveedor.");
+            lblMensaje.setText(task.getException().getLocalizedMessage());
             ivImage.setImage(new javafx.scene.image.Image("/applegymdigitalpersona/noimage.jpg"));
             hbBody.setDisable(false);
             hbLoad.setVisible(false);
@@ -480,6 +483,7 @@ public class FxRegistrarMarcaController implements Initializable {
             lblFecha.setText("--");
             ivEstado.setImage(imageQuestion);
             lblMensaje.setText("Mensaje");
+            lblProcesando.setText("Procesando petición...");
             hbBody.setDisable(true);
             hbLoad.setVisible(true);
             tvLista.getItems().clear();
@@ -565,6 +569,8 @@ public class FxRegistrarMarcaController implements Initializable {
                             return "1";
                         } else if (jsonObjectData.get("estado").toString().equalsIgnoreCase("2")) {
                             return "2";
+                        } else if (jsonObjectData.get("estado").toString().equalsIgnoreCase("3")) {
+                            return "3";
                         } else {
                             return jsonObjectData.get("message").getAsString();
                         }
@@ -578,7 +584,7 @@ public class FxRegistrarMarcaController implements Initializable {
         };
 
         task.setOnScheduled(event -> {
-
+            lblProcesando.setText("Quite el dedo, para continuar...");
         });
         task.setOnFailed(event -> {
             ivEstado.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -617,16 +623,27 @@ public class FxRegistrarMarcaController implements Initializable {
                 hbBody.setDisable(false);
                 hbLoad.setVisible(false);
                 onEventRehacer();
-            } else {
+            } else if (result.equalsIgnoreCase("3")) {
                 ivEstado.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
                 ivEstado.setImage(imageWarning);
-                lblMensaje.setText(result);
-                hbBody.setDisable(false);
-                hbLoad.setVisible(false);
+                lblMensaje.setText("El cliente ya marco un ingreso.");
                 PlatformImpl.startup(() -> {
                     AudioClip clip = new AudioClip(getClass().getResource("error.mp3").toString());
                     clip.play();
                 });
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
+                onEventRehacer();
+            } else {
+                ivEstado.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+                ivEstado.setImage(imageWarning);
+                lblMensaje.setText(result);
+                PlatformImpl.startup(() -> {
+                    AudioClip clip = new AudioClip(getClass().getResource("error.mp3").toString());
+                    clip.play();
+                });
+                hbBody.setDisable(false);
+                hbLoad.setVisible(false);
                 onEventRehacer();
             }
         });

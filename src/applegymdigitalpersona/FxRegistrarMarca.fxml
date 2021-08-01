@@ -130,7 +130,7 @@
                         <Image url="@loading.gif" />
                      </image>
                   </ImageView>
-                  <Label style="-fx-text-fill: white; -fx-font-size: 17px;" styleClass="text" text="Procesando petición..." textFill="WHITE" />
+                  <Label fx:id="lblProcesando" style="-fx-text-fill: white; -fx-font-size: 17px;" styleClass="text" text="Procesando petición..." textFill="WHITE" />
                </children>
             </VBox>
          </children>
